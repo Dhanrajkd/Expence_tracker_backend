@@ -1,27 +1,35 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express from "express"
-import mongoose from "mongoose"
+
+import express from "express";
+import mongoose from "mongoose";
 import cors from "cors";
-import users from "./Routes/Userrouter.js"
-import transaction from "./Routes/Transactionrouter.js"
-import Addbudject from "./Routes/Budjectrouter.js"
-const port=4000
-const app=express()
 
-  app.use(cors())
+import users from "./Routes/Userrouter.js";
+import transaction from "./Routes/Transactionrouter.js";
+import Addbudject from "./Routes/Budjectrouter.js";
 
-app.use(express.json())
+const app = express();
+const port = process.env.PORT || 4000;
+
+app.use(cors());
+app.use(express.json());
+
 app.get("/",(req,res)=>{
-    console.log("server is running")
-})
-app.listen(port, "0.0.0.0", () => {
-   console.log(`Server running on port ${port}`);
+   res.send("server is running");
 });
-mongoose.connect("mongodb+srv://dhanrajd158_db_user:Expensetracker@cluster0.d879r9f.mongodb.net")
-.then(()=>console.log("Db connected"))
-.catch((err)=>console.log(err))
 
-app.use('/',users)
-app.use("/",transaction)
-app.use("/",Addbudject)
+app.use("/", users);
+app.use("/", transaction);
+app.use("/", Addbudject);
+
+mongoose.connect(process.env.MONGO_URI)
+.then(()=>{
+   console.log("DB connected");
+
+   app.listen(port,"0.0.0.0",()=>{
+      console.log(`Server running on ${port}`);
+   });
+
+})
+.catch(err=>console.log(err));

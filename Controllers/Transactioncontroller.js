@@ -26,17 +26,19 @@ export const addtransaction=async(req,res)=>{
 export const get_trans_data=async(req,res)=>{
     try{
        const id=req.user.id
-       const { month } = req.query
-       console.log("API HIT");
-       console.log("month",month)
         const transactions = await Transaction.find({userid:id})
         const page=parseInt(req.query.page) || 1
         console.log("page",page)
         const limit=parseInt(req.query.limit) || 5
         const skip=(page-1)*limit
-        const startDate = new Date(`${month}-01`);
-            const [year, m] = month.split("-");
-            const nextMonth = new Date(year, m); 
+        const { month } = req.query
+        const [year, monthNumber] = month.split("-")
+        const startDate = new Date(
+            Date.UTC(Number(year), Number(monthNumber) - 1, 1)
+            )
+            const nextMonth = new Date(
+            Date.UTC(Number(year), Number(monthNumber), 1)
+            )
             const data = await Transaction.find({
                 userid: id,
                 createdAt: {

@@ -32,13 +32,9 @@ export const get_trans_data=async(req,res)=>{
         const limit=parseInt(req.query.limit) || 5
         const skip=(page-1)*limit
         const { month } = req.query
-        const [year, monthNumber] = month.split("-")
-        const startDate = new Date(
-            Date.UTC(Number(year), Number(monthNumber) - 1, 1)
-            )
-            const nextMonth = new Date(
-            Date.UTC(Number(year), Number(monthNumber), 1)
-            )
+        const startDate = new Date(`${month}-01`)
+        const nextMonth = new Date(startDate)
+        nextMonth.setMonth(nextMonth.getMonth() + 1)
             const data = await Transaction.find({
                 userid: id,
                 createdAt: {
@@ -46,6 +42,7 @@ export const get_trans_data=async(req,res)=>{
                 $lt: nextMonth
                 }
             } )
+            .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
             const totalrecords=await Transaction.find({
@@ -55,8 +52,9 @@ export const get_trans_data=async(req,res)=>{
                 $lt: nextMonth
                 }
             })
-            console.log("data", data);
-            console.log("records",Math.ceil(totalrecords.length/limit))
+          console.log("month", month)
+          console.log("startDate", startDate)
+          console.log("nextMonth", nextMonth)
          const expences=await Transaction.aggregate([
             {
                 $match:{
@@ -117,6 +115,7 @@ export const get_trans_data=async(req,res)=>{
         return  res.status(500).json({success:false,message:"server error"})
     }
 }
+  
 export const deletedata=async(req,res)=>{
         try{
             const id=req.params.id

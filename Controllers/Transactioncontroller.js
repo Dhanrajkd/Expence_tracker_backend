@@ -3,7 +3,6 @@ import mongoose from "mongoose"
 export const addtransaction=async(req,res)=>{
     try{
         const id=req.user.id
-        console.log("add_transaction",req.body)
         const {amount,paymentfor,method}=req.body
         if(!amount || !paymentfor || !method){
             res.status(404).json({success:false,message:"all fields required"})
@@ -18,7 +17,6 @@ export const addtransaction=async(req,res)=>{
             res.status(400).json({success:false,message:"data not found"})
         }
         await data.save()
-        console.log(data)
         res.status(201).json({success:true,message:"data added"})
     }
     catch(err){

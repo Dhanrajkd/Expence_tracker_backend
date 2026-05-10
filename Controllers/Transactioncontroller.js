@@ -56,7 +56,6 @@ export const get_trans_data=async(req,res)=>{
                 }
             })
             console.log("data", data);
-            console.log("totalrecords",totalrecords)
             console.log("records",Math.ceil(totalrecords.length/limit))
          const expences=await Transaction.aggregate([
             {
@@ -95,7 +94,6 @@ export const get_trans_data=async(req,res)=>{
                 }
             }
         ])
-        console.log(data)
         const totalexpences=expences[0].totalexpences
         if(!transactions){
            return res.status(404).json({success:false,message:"No data"})
